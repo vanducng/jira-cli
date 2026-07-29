@@ -71,6 +71,12 @@ nature of the data. Yet, we've attempted to make the experience as similar as po
 ## Installation
 `jira-cli` is available as a downloadable packaged binary for Linux, macOS, and Windows from the [releases page](https://github.com/ankitpokhrel/jira-cli/releases).
 
+The `vanducng/jira-cli` fork, including inline local-image comments, is available from its Homebrew tap:
+
+```sh
+brew install vanducng/tap/jira-cli
+```
+
 You can use Docker to quickly try out `jira-cli`.
 
 ```sh
