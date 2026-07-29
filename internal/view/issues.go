@@ -7,10 +7,10 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/ankitpokhrel/jira-cli/api"
-	"github.com/ankitpokhrel/jira-cli/pkg/jira"
-	"github.com/ankitpokhrel/jira-cli/pkg/jira/filter/issue"
-	"github.com/ankitpokhrel/jira-cli/pkg/tui"
+	"github.com/vanducng/jira-cli/api"
+	"github.com/vanducng/jira-cli/pkg/jira"
+	"github.com/vanducng/jira-cli/pkg/jira/filter/issue"
+	"github.com/vanducng/jira-cli/pkg/tui"
 )
 
 // DisplayFormat is a issue display type.

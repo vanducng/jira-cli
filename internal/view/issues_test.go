@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ankitpokhrel/jira-cli/pkg/jira"
-	"github.com/ankitpokhrel/jira-cli/pkg/tui"
+	"github.com/vanducng/jira-cli/pkg/jira"
+	"github.com/vanducng/jira-cli/pkg/tui"
 )
 
 func TestIssueData(t *testing.T) {

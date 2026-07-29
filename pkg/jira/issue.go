@@ -12,11 +12,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ankitpokhrel/jira-cli/pkg/jira/filter/issue"
+	"github.com/vanducng/jira-cli/pkg/jira/filter/issue"
 
-	"github.com/ankitpokhrel/jira-cli/pkg/adf"
-	"github.com/ankitpokhrel/jira-cli/pkg/jira/filter"
-	"github.com/ankitpokhrel/jira-cli/pkg/md"
+	"github.com/vanducng/jira-cli/pkg/adf"
+	"github.com/vanducng/jira-cli/pkg/jira/filter"
+	"github.com/vanducng/jira-cli/pkg/md"
 )
 
 const (

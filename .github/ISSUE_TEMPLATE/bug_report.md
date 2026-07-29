@@ -8,7 +8,7 @@ about: Create a report to help us improve
 <!--- A clear and concise description of what the bug is. --->
 
 **Please provide following details**
-1. JiraCLI Version:
+1. `jira-cli` version:
     ```
     Please paste the output of `jira version` here.
     ```

@@ -1,61 +1,32 @@
 <div align="center">
-    <a href="#">
-        <img alt="stargazers over time" src="https://stars.medv.io/ankitpokhrel/jira-cli.svg" />
-    </a>
-    <h1 align="center">JiraCLI</h1>
-</div>
-
-<div>
+    <h1 align="center">jira-cli</h1>
     <p align="center">
-        <a href="https://github.com/ankitpokhrel/jira-cli/actions?query=workflow%3Abuild+branch%3Amaster">
-            <img alt="Build" src="https://img.shields.io/github/actions/workflow/status/ankitpokhrel/jira-cli/ci.yml?branch=main&style=flat-square" />
+        <a href="https://github.com/vanducng/jira-cli/actions/workflows/ci.yml">
+            <img alt="Build" src="https://img.shields.io/github/actions/workflow/status/vanducng/jira-cli/ci.yml?branch=main&style=flat-square" />
         </a>
-        <a href="https://goreportcard.com/report/github.com/ankitpokhrel/jira-cli">
-            <img alt="GO Report-card" src="https://goreportcard.com/badge/github.com/ankitpokhrel/jira-cli?style=flat-square" />
+        <a href="https://goreportcard.com/report/github.com/vanducng/jira-cli">
+            <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/vanducng/jira-cli?style=flat-square" />
         </a>
-        <a href="https://github.com/ankitpokhrel/jira-cli/blob/master/LICENSE">
+        <a href="https://github.com/vanducng/jira-cli/blob/main/LICENSE">
             <img alt="Software License" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" />
         </a>
         <a href="#">
-            <img alt="Downloads" src="https://img.shields.io/github/downloads/ankitpokhrel/jira-cli/total?style=flat-square" />
-        </a>
-        <a href="https://opencollective.com/jira-cli#backers">
-            <img alt="Financial Contributors" src="https://img.shields.io/opencollective/backers/jira-cli?style=flat-square" />
+            <img alt="Downloads" src="https://img.shields.io/github/downloads/vanducng/jira-cli/total?style=flat-square" />
         </a>
     </p>
     <p align="center">
-        <i>Feature-rich Interactive Jira Command Line</i>
+        <i>Feature-rich interactive Jira command-line client</i>
     </p>
-    <img align="center" alt="JiraCLI Demo" src=".github/assets/demo.gif" /><br/><br/>
-    <p align="center">
-         <sub>
-            Financial support from private and corporate sponsors ensures the tool's continued development.<br/>
-            Please <a href="https://opencollective.com/jira-cli#backers">consider sponsoring the project</a> if you or your company rely on JiraCLI.
-         </sub><br/><br/>
-        <a href="https://opencollective.com/jira-cli#backers" target="_blank">
-            <img src="https://opencollective.com/jira-cli/backers.svg" alt="jira-cli open collective badge">
-        </a>
-    </p>
+    <img align="center" alt="jira-cli demo" src=".github/assets/demo.gif" /><br/><br/>
 </div>
 
-<div>
-   <h2 align="center">Supporters</h2>
-   <p align="center">
-      <a href="https://www.atlassian.com?from=ankitpokhrel/jira-cli" target="_blank">
-         <img alt="Atlassian Logo" src=".github/assets/supporters/atlassian.png" />
-      </a><br/>
-      <a href="https://www.jetbrains.com/?from=ankitpokhrel/jira-cli" target="_blank">
-         <img alt="JetBrains Logo" src=".github/assets/supporters/jetbrains.png" />
-      </a>
-   </p>
-</div>
+> Maintained fork of [ankitpokhrel/jira-cli](https://github.com/ankitpokhrel/jira-cli), with support for rendering local images inline in Jira comments.
 
-JiraCLI is an interactive command line tool for Atlassian Jira that will help you avoid Jira UI to some extent. This
+`jira-cli` is an interactive command line tool for Atlassian Jira that will help you avoid Jira UI to some extent. This
 tool may not be able to do everything, but it has all the essential features required to improve your day-to-day workflow with Jira.
 
-The tool started with the idea of making issue search and navigation as straightforward as possible. However, with the
-help of [outstanding supporters like you](#support-the-project), we evolved, and the tool now includes all necessary
-features like issue creation, cloning, linking, ticket transition, and much more.
+The upstream project started with issue search and navigation, then grew to include issue creation, cloning, linking,
+ticket transitions, and more. This fork preserves those capabilities while maintaining its own releases and extensions.
 
 > This tool is heavily inspired by the [GitHub CLI](https://github.com/cli/cli)
 
@@ -69,9 +40,7 @@ nature of the data. Yet, we've attempted to make the experience as similar as po
 | **Jira**  | <a href="#"><img alt="Jira Cloud" src="https://img.shields.io/badge/Jira Cloud-%E2%9C%93-dark--green?logo=jira&style=flat-square" /></a><a href="#"><img alt="Jira Server" src="https://img.shields.io/badge/Jira Server-%E2%9C%93-dark--green?logo=jira&style=flat-square" /></a> |
 
 ## Installation
-`jira-cli` is available as a downloadable packaged binary for Linux, macOS, and Windows from the [releases page](https://github.com/ankitpokhrel/jira-cli/releases).
-
-The `vanducng/jira-cli` fork, including inline local-image comments, is available from its Homebrew tap:
+Packaged binaries for Linux, macOS, and Windows are available from this fork's [releases page](https://github.com/vanducng/jira-cli/releases). On macOS, install from the Homebrew tap:
 
 ```sh
 brew install vanducng/tap/jira-cli
@@ -80,10 +49,10 @@ brew install vanducng/tap/jira-cli
 You can use Docker to quickly try out `jira-cli`.
 
 ```sh
-docker run -it --rm ghcr.io/ankitpokhrel/jira-cli:latest
+docker run -it --rm ghcr.io/vanducng/jira-cli:latest
 ```
 
-Follow the [installation guide](https://github.com/ankitpokhrel/jira-cli/wiki/Installation) for other installation methods like `Homebrew`, `Nix`, etc.
+The [upstream installation guide](https://github.com/ankitpokhrel/jira-cli/wiki/Installation) covers other installation methods such as Nix.
 
 <a href="https://repology.org/project/jira-cli-go/versions">
     <img src="https://repology.org/badge/vertical-allrepos/jira-cli-go.svg" alt="Packaging status">
@@ -96,7 +65,7 @@ Follow the [installation guide](https://github.com/ankitpokhrel/jira-cli/wiki/In
 1. [Get a Jira API token](https://id.atlassian.com/manage-profile/security/api-tokens) and export it to your shell as
    a `JIRA_API_TOKEN` variable. Add it to your shell configuration file, for instance, `$HOME/.bashrc`, so that the
    variable is always available. Alternatively, you can also use `.netrc` file or `keychain` to set the token. Learn
-   more [here](https://github.com/ankitpokhrel/jira-cli/discussions/356).
+   more in the [upstream authentication discussion](https://github.com/ankitpokhrel/jira-cli/discussions/356).
 2. Run `jira init`, select installation type as `Cloud`, and provide required details to generate a config file required
    for the tool.
 
@@ -108,7 +77,7 @@ Follow the [installation guide](https://github.com/ankitpokhrel/jira-cli/wiki/In
      a `JIRA_API_TOKEN` variable. In addition to this, set `JIRA_AUTH_TYPE` env to `bearer`.
    - Add these ENVs to your shell configuration file, for instance, `$HOME/.bashrc`, so that they are always available.
    - Alternatively, you can also use `.netrc` file or `keychain` to set the token. Learn
-     more [here](https://github.com/ankitpokhrel/jira-cli/discussions/356).
+     more in the [upstream authentication discussion](https://github.com/ankitpokhrel/jira-cli/discussions/356).
 2. Run `jira init`, select installation type as `Local`, and provide the required details to generate a config file required
    for the tool.
    - The most common auth type for on-premise installation is `basic`. If you are using your jira login credentials
@@ -121,7 +90,7 @@ Follow the [installation guide](https://github.com/ankitpokhrel/jira-cli/wiki/In
    you will have to fill in `epic.name`, `epic.link` and `issue.types.*.handle` fields manually in the generated config
    to get the expected behavior.
 
-See [FAQs](https://github.com/ankitpokhrel/jira-cli/discussions/categories/faqs) for frequently asked questions.
+See the [upstream FAQs](https://github.com/ankitpokhrel/jira-cli/discussions/categories/faqs) for frequently asked questions.
 
 #### Authentication types
 
@@ -171,12 +140,9 @@ The lists are displayed in an interactive UI by default.
 - Press `?` to open the help window.
 
 ### Resources
-- [FAQs](https://github.com/ankitpokhrel/jira-cli/discussions/categories/faqs)
+- [Upstream FAQs](https://github.com/ankitpokhrel/jira-cli/discussions/categories/faqs)
 - [Introduction and Motivation](https://medium.com/@ankitpokhrel/introducing-jira-cli-the-missing-command-line-tool-for-atlassian-jira-fe44982cc1de)
 - [Getting Started with JiraCLI](https://www.mslinn.com/blog/2022/08/12/jiracli.html)
-
-> [!TIP]
-> Like this tool? Checkout [similar tool for Shopify!](https://github.com/ankitpokhrel/shopctl)
 
 ## Commands
 ### Issue
@@ -335,7 +301,7 @@ $  jira issue create -tStory -s"Epic during creation" -PEPIC-42
 
 ![Create an issue](.github/assets/create.gif)
 
-You can use a `--custom` flag to set custom fields while creating the issue. See [this post](https://github.com/ankitpokhrel/jira-cli/discussions/346) for more details.
+You can use a `--custom` flag to set custom fields while creating the issue. See the [upstream discussion](https://github.com/ankitpokhrel/jira-cli/discussions/346) for more details.
 
 The command supports both [Github-flavored](https://github.github.com/gfm/)
 and [Jira-flavored](https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all) markdown for writing
@@ -353,7 +319,7 @@ $ echo "Description from stdin" | jira issue create -s"Summary" -tTask
 ```
 
 ![Markdown render preview](.github/assets/markdown.jpg)
-> The preview above shows markdown template passed in Jira CLI and how it is rendered in the Jira UI.
+> The preview above shows a markdown template passed to `jira-cli` and how it is rendered in the Jira UI.
 
 #### Edit
 The `edit` command lets you edit an issue.
@@ -429,7 +395,7 @@ To transition the selected issue from the TUI, press `m`.
 The `view` command lets you see issue details in a terminal. Atlassian document is roughly converted to a markdown
 and is nicely displayed in the terminal.
 
-The command uses `less` as a pager by default. To set your own pager, see https://github.com/ankitpokhrel/jira-cli/discussions/569.
+The command uses `less` as a pager by default. To set your own pager, see the [upstream discussion](https://github.com/ankitpokhrel/jira-cli/discussions/569).
 
 ```sh
 $ jira issue view ISSUE-1
@@ -810,18 +776,18 @@ Sprint 1:   3
 
 ## Feature requests
 
-Please [open a discussion](https://github.com/ankitpokhrel/jira-cli/discussions/categories/ideas) in `ideas` category for the proposed feature.
+Please [open an issue](https://github.com/vanducng/jira-cli/issues/new) with the proposed feature.
 
 ##### How these requests are usually prioritized?
 
 - The feature that is straightforward to implement, doesn't require too much mental power, and can be done even I am lazy will be picked first.
 - If the feature is something that I am missing in my day-to-day work, it might be done first.
-- Rest of the features will be picked based on the [number of votes](https://github.com/ankitpokhrel/jira-cli/discussions/categories/ideas) on the particular feature.
+- Remaining features are prioritized by impact and demand.
 
 ## Development
 1. Clone the repo.
    ```sh
-   git clone git@github.com:ankitpokhrel/jira-cli.git
+   git clone git@github.com:vanducng/jira-cli.git
    ```
 
 2. Optional: If you want to run a Jira instance locally, you can use the following make recipe.
@@ -840,20 +806,13 @@ Please [open a discussion](https://github.com/ankitpokhrel/jira-cli/discussions/
    make ci
    ```
 
-## Support the project
-Your suggestions and feedbacks are highly appreciated. Please feel free
-to [start a discussion](https://github.com/ankitpokhrel/jira-cli/discussions)
-or [create an issue](https://github.com/ankitpokhrel/jira-cli/issues/new) to share your experience with the tool or to
-discuss a feature/issue.
+## Feedback and support
+Feedback is welcome through [issues](https://github.com/vanducng/jira-cli/issues/new).
 
-If you think this tool is useful, saves you a lot of work, and lets you sleep much better, then consider supporting the
-project by any of the following means:
-
-- [Star the repo](https://github.com/ankitpokhrel/jira-cli/stargazers).
+- [Star the repo](https://github.com/vanducng/jira-cli/stargazers).
 - Spread the word by sharing the project on social media or with friends.
-- [Report bugs](https://github.com/ankitpokhrel/jira-cli/issues/new/choose)
-  or [propose solutions](https://github.com/ankitpokhrel/jira-cli/issues).
-- [Donate a small amount](https://opencollective.com/jira-cli#backers).
+- [Report bugs](https://github.com/vanducng/jira-cli/issues/new/choose)
+  or [propose solutions](https://github.com/vanducng/jira-cli/issues).
 
 <div>
    <br/>
