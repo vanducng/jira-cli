@@ -5,10 +5,10 @@ import (
 	"strconv"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/ankitpokhrel/jira-cli/api"
-	"github.com/ankitpokhrel/jira-cli/internal/cmdutil"
-	"github.com/ankitpokhrel/jira-cli/internal/query"
 	"github.com/spf13/cobra"
+	"github.com/vanducng/jira-cli/api"
+	"github.com/vanducng/jira-cli/internal/cmdutil"
+	"github.com/vanducng/jira-cli/internal/query"
 )
 
 const (

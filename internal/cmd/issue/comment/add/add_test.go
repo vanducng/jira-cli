@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ankitpokhrel/jira-cli/pkg/jira"
+	"github.com/vanducng/jira-cli/pkg/jira"
 )
 
 type fakeCommentClient struct {
