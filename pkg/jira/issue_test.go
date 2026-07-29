@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -521,6 +522,7 @@ func TestGetLinkID(t *testing.T) {
 
 func TestAddIssueComment(t *testing.T) {
 	var unexpectedStatusCode bool
+	expectedBody := `{"body":"comment","properties":[{"key":"sd.public.comment","value":{"internal":false}}]}`
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
@@ -530,8 +532,6 @@ func TestAddIssueComment(t *testing.T) {
 
 		actualBody := new(strings.Builder)
 		_, _ = io.Copy(actualBody, r.Body)
-
-		expectedBody := `{"body":"comment","properties":[{"key":"sd.public.comment","value":{"internal":false}}]}`
 
 		assert.Equal(t, expectedBody, actualBody.String())
 
@@ -548,10 +548,68 @@ func TestAddIssueComment(t *testing.T) {
 	err := client.AddIssueComment("TEST-1", "comment", false)
 	assert.NoError(t, err)
 
+	expectedBody = `{"body":"comment\n\n!diagram.png|thumbnail!\n\n!after.png|thumbnail!","properties":[{"key":"sd.public.comment","value":{"internal":false}}]}`
+	err = client.AddIssueComment("TEST-1", "comment", false, "diagram.png", "after.png")
+	assert.NoError(t, err)
+
+	expectedBody = `{"body":"!diagram.png|thumbnail!","properties":[{"key":"sd.public.comment","value":{"internal":false}}]}`
+	err = client.AddIssueComment("TEST-1", "", false, "diagram.png")
+	assert.NoError(t, err)
+
+	err = client.AddIssueComment("TEST-1", "comment", false, "invalid|name.png")
+	assert.ErrorContains(t, err, "unsupported Jira markup characters")
+
 	unexpectedStatusCode = true
+	expectedBody = `{"body":"comment","properties":[{"key":"sd.public.comment","value":{"internal":false}}]}`
 
 	err = client.AddIssueComment("TEST-1", "comment", false)
 	assert.Error(t, &ErrUnexpectedResponse{}, err)
+}
+
+func TestAddIssueAttachment(t *testing.T) {
+	imagePath := filepath.Join(t.TempDir(), "diagram.png")
+	assert.NoError(t, os.WriteFile(imagePath, []byte("image-data"), 0o600))
+
+	var unexpectedStatusCode bool
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/rest/api/2/issue/TEST-1/attachments", r.URL.Path)
+		assert.Equal(t, "application/json", r.Header.Get("Accept"))
+		assert.Equal(t, "no-check", r.Header.Get("X-Atlassian-Token"))
+		assert.Contains(t, r.Header.Get("Content-Type"), "multipart/form-data")
+		assert.NoError(t, r.ParseMultipartForm(1024))
+
+		file, header, err := r.FormFile("file")
+		assert.NoError(t, err)
+		if err == nil {
+			defer func() { _ = file.Close() }()
+			actual, readErr := io.ReadAll(file)
+			assert.NoError(t, readErr)
+			assert.Equal(t, "diagram.png", header.Filename)
+			assert.Equal(t, []byte("image-data"), actual)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		if unexpectedStatusCode {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(`{"errorMessages":["upload failed"]}`))
+			return
+		}
+		_, _ = w.Write([]byte(`[{"id":"123","filename":"diagram.png"}]`))
+	}))
+	defer server.Close()
+
+	client := NewClient(Config{Server: server.URL}, WithTimeout(3*time.Second))
+	attachment, err := client.AddIssueAttachment("TEST-1", imagePath)
+	assert.NoError(t, err)
+	assert.Equal(t, &IssueAttachment{ID: "123", Filename: "diagram.png"}, attachment)
+
+	unexpectedStatusCode = true
+	_, err = client.AddIssueAttachment("TEST-1", imagePath)
+	assert.Error(t, err)
+
+	_, err = client.AddIssueAttachment("TEST-1", filepath.Join(t.TempDir(), "missing.png"))
+	assert.ErrorContains(t, err, "reading attachment")
 }
 
 func TestAddIssueWorklog(t *testing.T) {
