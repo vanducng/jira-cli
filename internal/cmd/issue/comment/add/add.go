@@ -2,6 +2,7 @@ package add
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/cobra"
@@ -21,6 +22,9 @@ const (
 
 # Pass required parameters to skip prompt 
 $ jira issue comment add ISSUE-1 "My comment"
+
+# Upload a local image and render it inline
+$ jira issue comment add ISSUE-1 "Implementation flow" --image ./flow.png
 
 # Multi-line comment
 $ jira issue comment add ISSUE-1 $'Supports\n\nNew line'
@@ -55,6 +59,7 @@ func NewCmdCommentAdd() *cobra.Command {
 
 	cmd.Flags().Bool("web", false, "Open issue in web browser after adding comment")
 	cmd.Flags().StringP("template", "T", "", "Path to a file to read comment body from")
+	cmd.Flags().StringArrayP("image", "i", nil, "Attach a local image and render it inline (repeatable)")
 	cmd.Flags().Bool("no-input", false, "Disable prompt for non-required fields")
 	cmd.Flags().Bool("internal", false, "Make comment internal")
 
@@ -103,7 +108,7 @@ func add(cmd *cobra.Command, args []string) {
 		s := cmdutil.Info("Adding comment")
 		defer s.Stop()
 
-		return client.AddIssueComment(ac.params.issueKey, ac.params.body, ac.params.internal)
+		return ac.submit()
 	}()
 	cmdutil.ExitIfError(err)
 
@@ -122,6 +127,7 @@ type addParams struct {
 	issueKey string
 	body     string
 	template string
+	images   []string
 	noInput  bool
 	internal bool
 	debug    bool
@@ -144,6 +150,9 @@ func parseArgsAndFlags(args []string, flags query.FlagParser) *addParams {
 	template, err := flags.GetString("template")
 	cmdutil.ExitIfError(err)
 
+	images, err := flags.GetStringArray("image")
+	cmdutil.ExitIfError(err)
+
 	noInput, err := flags.GetBool("no-input")
 	cmdutil.ExitIfError(err)
 
@@ -154,16 +163,48 @@ func parseArgsAndFlags(args []string, flags query.FlagParser) *addParams {
 		issueKey: issueKey,
 		body:     body,
 		template: template,
+		images:   images,
 		noInput:  noInput,
 		internal: internal,
 		debug:    debug,
 	}
 }
 
+type commentClient interface {
+	AddIssueAttachment(key, path string) (*jira.IssueAttachment, error)
+	AddIssueComment(key, comment string, internal bool, imageNames ...string) error
+}
+
 type addCmd struct {
-	client    *jira.Client
+	client    commentClient
 	linkTypes []*jira.IssueLinkType
 	params    *addParams
+}
+
+func (ac *addCmd) submit() error {
+	imageNames := make([]string, 0, len(ac.params.images))
+	attachmentIDs := make([]string, 0, len(ac.params.images))
+
+	for _, path := range ac.params.images {
+		attachment, err := ac.client.AddIssueAttachment(ac.params.issueKey, path)
+		if err != nil {
+			if len(attachmentIDs) > 0 {
+				return fmt.Errorf("uploading image %q after attachments %s: %w", path, strings.Join(attachmentIDs, ", "), err)
+			}
+			return fmt.Errorf("uploading image %q: %w", path, err)
+		}
+		imageNames = append(imageNames, attachment.Filename)
+		attachmentIDs = append(attachmentIDs, attachment.ID)
+	}
+
+	if err := ac.client.AddIssueComment(ac.params.issueKey, ac.params.body, ac.params.internal, imageNames...); err != nil {
+		if len(attachmentIDs) > 0 {
+			return fmt.Errorf("adding comment after uploading attachments %s: %w", strings.Join(attachmentIDs, ", "), err)
+		}
+		return err
+	}
+
+	return nil
 }
 
 func (ac *addCmd) setIssueKey() error {

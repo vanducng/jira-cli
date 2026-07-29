@@ -520,6 +520,12 @@ $ jira issue comment add ISSUE-1 "My comment body"
 # Same as above but as an internal comment
 $ jira issue comment add ISSUE-1 "My comment body" --internal
 
+# Upload a local image and render it inline in the comment
+$ jira issue comment add ISSUE-1 "Implementation flow" --image ./flow.png
+
+# Add more than one image
+$ jira issue comment add ISSUE-1 "Before and after" -i ./before.png -i ./after.png
+
 # Load comment from template file
 $ jira issue comment add ISSUE-1 --template /path/to/template.tmpl
 
@@ -529,6 +535,8 @@ $ jira issue comment add ISSUE-1 --template -
 # Or, use pipe to read input directly from standard input
 $ echo "Comment from stdin" | jira issue comment add ISSUE-1
 ```
+
+Images are uploaded as issue attachments before the comment is created. If comment creation fails, the error lists the uploaded attachment IDs so the partial write can be reviewed or removed.
 
 > [!NOTE]
 > For the comment body, the positional argument always takes precedence over the `--template` flag if both of them are passed. In the

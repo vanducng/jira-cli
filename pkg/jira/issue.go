@@ -1,11 +1,15 @@
 package jira
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/ankitpokhrel/jira-cli/pkg/jira/filter/issue"
@@ -309,9 +313,74 @@ type issueCommentRequest struct {
 	Properties []issueCommentProperty `json:"properties"`
 }
 
+// IssueAttachment preserves the server-selected filename required by inline markup.
+type IssueAttachment struct {
+	ID       string `json:"id"`
+	Filename string `json:"filename"`
+}
+
+// AddIssueAttachment uploads separately because inline comments resolve existing attachments.
+func (c *Client) AddIssueAttachment(key, path string) (*IssueAttachment, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("reading attachment: %w", err)
+	}
+
+	var body bytes.Buffer
+	writer := multipart.NewWriter(&body)
+	part, err := writer.CreateFormFile("file", filepath.Base(path))
+	if err != nil {
+		return nil, fmt.Errorf("creating attachment form: %w", err)
+	}
+	if _, err := part.Write(data); err != nil {
+		return nil, fmt.Errorf("writing attachment form: %w", err)
+	}
+	if err := writer.Close(); err != nil {
+		return nil, fmt.Errorf("closing attachment form: %w", err)
+	}
+
+	res, err := c.PostV2(context.Background(), fmt.Sprintf("/issue/%s/attachments", key), body.Bytes(), Header{
+		"Accept":            "application/json",
+		"Content-Type":      writer.FormDataContentType(),
+		"X-Atlassian-Token": "no-check",
+	})
+	if err != nil {
+		return nil, err
+	}
+	if res == nil {
+		return nil, ErrEmptyResponse
+	}
+	defer func() { _ = res.Body.Close() }()
+
+	if res.StatusCode != http.StatusOK {
+		return nil, formatUnexpectedResponse(res)
+	}
+
+	var attachments []*IssueAttachment
+	if err := json.NewDecoder(res.Body).Decode(&attachments); err != nil {
+		return nil, fmt.Errorf("decoding attachment response: %w", err)
+	}
+	if len(attachments) == 0 || attachments[0] == nil {
+		return nil, ErrEmptyResponse
+	}
+
+	return attachments[0], nil
+}
+
 // AddIssueComment adds comment to an issue using POST /issue/{key}/comment endpoint.
-func (c *Client) AddIssueComment(key, comment string, internal bool) error {
-	body, err := json.Marshal(&issueCommentRequest{Body: md.ToJiraMD(comment), Properties: []issueCommentProperty{{Key: "sd.public.comment", Value: issueCommentPropertyValue{Internal: internal}}}})
+func (c *Client) AddIssueComment(key, comment string, internal bool, imageNames ...string) error {
+	commentBody := md.ToJiraMD(comment)
+	for _, name := range imageNames {
+		if name == "" || strings.ContainsAny(name, "!|\r\n") {
+			return fmt.Errorf("attachment filename %q contains unsupported Jira markup characters", name)
+		}
+		if commentBody != "" {
+			commentBody += "\n\n"
+		}
+		commentBody += fmt.Sprintf("!%s|thumbnail!", name)
+	}
+
+	body, err := json.Marshal(&issueCommentRequest{Body: commentBody, Properties: []issueCommentProperty{{Key: "sd.public.comment", Value: issueCommentPropertyValue{Internal: internal}}}})
 	if err != nil {
 		return err
 	}
